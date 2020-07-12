@@ -1,4 +1,3 @@
-require("dotenv");
 import bodyParser = require("body-parser");
 import express = require("express");
 import chatsController from "./routesController/chatsController";
@@ -7,7 +6,7 @@ import search from "./routesController/searchController";
 const app: express.Application = express();
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL!);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-with, Content-Type, Accept"
@@ -24,4 +23,4 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(chatsController);
 app.use(userController);
 app.use(search);
-export { app };
+export default app;

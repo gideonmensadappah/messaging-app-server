@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import * as http from "http";
 import io from "socket.io";
-import { app } from "./server";
+import app from "./server";
 import { MongoHelper } from "./DB/mongoHelper";
 
 const PORT = process.env.PORT || 5151;
@@ -18,7 +18,7 @@ type Message = {
 
 const server = http.createServer(app);
 const ioServer = io(server);
-console.log("hello")
+console.log("hello");
 ioServer.on("connection", (socket) => {
   console.log("a user connected");
 
@@ -35,7 +35,7 @@ ioServer.on("connection", (socket) => {
 server.listen(PORT);
 server.on("listening", async () => {
   try {
-    await MongoHelper.connect("mongodb://127.0.0.1:27017");
+    await MongoHelper.connect(process.env.DB_URL!);
     console.info("Welcome to Messaging App Server DB is ON SET!");
   } catch (err) {
     console.error(err);
