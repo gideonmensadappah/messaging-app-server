@@ -23,7 +23,7 @@ chatsController.get("/", (req: express.Request, res: express.Response) => {
 });
 
 chatsController.get(
-  "/chats/chat/:chatId",
+  "/chat/:chatId",
   (req: express.Request, res: express.Response) => {
     const { chatId } = req.params;
     const collection = getCollection();
@@ -36,7 +36,7 @@ chatsController.get(
 );
 
 chatsController.get(
-  "/messages/user/:id",
+  "/chat/user/:id",
   (req: express.Request, res: express.Response) => {
     const id = req.params["id"];
     const collection = getCollection();
@@ -55,28 +55,25 @@ chatsController.get(
 type CreateChat = {
   usersId: Array<string>;
 };
-chatsController.post(
-  "/messages/create-new-chat",
-  (req: express.Request, res: express.Response) => {
-    const { currentUserId, requestedUserId } = req.body;
-    const collection = getCollection();
-    const _currentUserId: string = currentUserId;
-    const _requestedUserId: string = requestedUserId;
-    const newChat: CreateChat = {
-      usersId: [_currentUserId, _requestedUserId],
-    };
-    collection.insertOne(newChat, (err, mongoRes) => {
-      if (err) {
-        console.error(err);
-      } else {
-        res.status(200).json(mongoRes.ops[0]);
-      }
-    });
-  }
-);
+chatsController.post("/chat", (req: express.Request, res: express.Response) => {
+  const { currentUserId, requestedUserId } = req.body;
+  const collection = getCollection();
+  const _currentUserId: string = currentUserId;
+  const _requestedUserId: string = requestedUserId;
+  const newChat: CreateChat = {
+    usersId: [_currentUserId, _requestedUserId],
+  };
+  collection.insertOne(newChat, (err, mongoRes) => {
+    if (err) {
+      console.error(err);
+    } else {
+      res.status(200).json(mongoRes.ops[0]);
+    }
+  });
+});
 
 chatsController.delete(
-  "/messages/delete-chat/:chatId",
+  "/chat/:chatId",
   (req: express.Request, res: express.Response) => {
     const id = req.params["chatId"];
     const collection = getCollection();

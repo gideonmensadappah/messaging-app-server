@@ -18,7 +18,7 @@ type Message = {
 
 const server = http.createServer(app);
 const ioServer = io(server);
-console.log("hello");
+
 ioServer.on("connection", (socket) => {
   console.log("a user connected");
 
