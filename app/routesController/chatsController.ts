@@ -34,21 +34,48 @@ chatsController.get(
     });
   }
 );
+// Join chats and users
 
 chatsController.get(
-  "/chat/user/:id",
-  (req: express.Request, res: express.Response) => {
+  "/chats/:id",
+  async (req: express.Request, res: express.Response) => {
     const id = req.params["id"];
     const collection = getCollection();
+    collection
+      .aggregate([
+        { $match: { usersId: { $in: [id] } } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "usersId",
+            foreignField: "_id",
+            as: "chatsdetails",
+          },
+        },
+      ])
+      .toArray((err, mongoRes) => {
+        if (err) res.send(err);
 
-    collection.find({ usersId: { $in: [id] } }).toArray((err, chats) => {
-      if (err) {
-        console.error(err);
-      } else {
-        chats = chats.map((chat) => chat);
-        res.json(chats);
-      }
-    });
+        const chatList: any = mongoRes.reduce((acc, currentObject) => {
+          const filteredDetails = currentObject.chatsdetails.filter(
+            (user: any) => user._id !== id
+          );
+          if (filteredDetails.length)
+            acc.push(
+              Object.assign({}, currentObject, {
+                chatsdetails: filteredDetails,
+              })
+            );
+
+          return acc;
+        }, []);
+        res.status(200).json(chatList);
+      });
+    try {
+    } catch {
+      console.log("catch block!");
+      res.json([]);
+    }
   }
 );
 

@@ -30,6 +30,13 @@ ioServer.on("connection", (socket) => {
     console.log(payload);
     socket.broadcast.emit("income message", payload);
   });
+
+  socket.on("typing", (msg: string) =>
+    socket.broadcast.emit("user typing", msg)
+  );
+  socket.on("stop typing", (msg: string) =>
+    socket.broadcast.emit("user typing stopped", msg)
+  );
 });
 
 server.listen(PORT);

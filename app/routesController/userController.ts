@@ -1,7 +1,12 @@
 import * as express from "express";
 import * as mongo from "mongodb";
 import { MongoHelper } from "../DB/mongoHelper";
-
+type User = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  phone: number;
+};
 const userController = express.Router();
 
 const getCollection = () => {
@@ -20,12 +25,7 @@ userController.get(
     });
   }
 );
-type User = {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  phone: number;
-};
+
 userController.post(
   "/users/new-user",
   (req: express.Request, res: express.Response) => {
