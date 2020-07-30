@@ -7,7 +7,7 @@ const getCollection = () => {
 };
 
 search.get("/search", (req: express.Request, res: express.Response) => {
-  const collection = getCollection();
+  const usersCollection = getCollection();
   const query = String(req.query["query"]);
 
   let mongoquery = {
@@ -18,13 +18,12 @@ search.get("/search", (req: express.Request, res: express.Response) => {
   };
 
   if (query) {
-    collection.find(mongoquery).toArray((err, users) => {
-      if (err) console.error(err);
-      if (users) {
-        res.status(200);
-        res.json(users);
-      } else {
+    usersCollection.find(mongoquery).toArray((err, users) => {
+      if (err) res.status(500).send(err);
+      if (users.length === 0) {
         res.send([]);
+      } else {
+        res.status(200).json(users);
       }
     });
   }

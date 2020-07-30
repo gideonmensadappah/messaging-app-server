@@ -26,8 +26,10 @@ ioServer.on("connection", (socket) => {
     console.log("user disconnected");
   });
 
+  socket.on("new chat", () => {
+    ioServer.emit("new chat");
+  });
   socket.on("new message", (payload: Message) => {
-    console.log(payload);
     socket.broadcast.emit("income message", payload);
   });
 
